@@ -35,7 +35,7 @@ module.exports = {
         const url = this.checkLink(event.body)?.url;
         if (!url) return;
         
-        const apikey = "r-e377e74a78b7363636jsj8ffb61ce";
+        const apikey = "YOUR_API_KEY";
         
         try {
             const response = await axios.get(`https://for-devs.onrender.com/api/snapsave?url=${url}&apikey=${apikey}`);
