@@ -14,7 +14,7 @@ module.exports = {
     version: '2.2.0',
     role: 0,
     category: 'AI',
-    author: 'Priyanshi || Priyansh',
+    author: 'Priyanshi Kaur 🩶 Priyansh Rajput',
     shortDescription: 'Artificial Intelligence',
     longDescription: 'Ask Anything To Ai For Your Answers',
   },
@@ -80,15 +80,21 @@ module.exports = {
     const cleanedQuery = priya.replace(/\b(ai|queen|\.ai)\b/gi, '').trim();
     const encodedPrompt = encodeURIComponent(cleanedQuery);
 
-    await message.reply('𝚀𝚞𝚎𝚎𝚗 𝚃𝚑𝚒𝚗𝚔𝚒𝚗𝚐.....');
+    // Send the initial waiting message
+    const waitingMessage = await message.reply('𝚀𝚞𝚎𝚎𝚗 𝚃𝚑𝚒𝚗𝚔𝚒𝚗𝚐.....');
 
     try {
+      // Call the AI API
       const response = await axiosInstance.get(`https://priyansh-ai.onrender.com/gemini/ai?query=${encodedPrompt}`);
       const Priya = response.data;
       const priyares = `${Priya}`;
-      await message.reply(priyares);
+
+      // Edit the waiting message with the AI response
+      await api.editMessage(priyares, waitingMessage.messageID);
+
     } catch (error) {
-      await message.reply('Oops! Something went wrong. Please try again later.');
+      // Handle any errors and update the waiting message
+      await api.editMessage('Oops! Something went wrong. Please try again later.', waitingMessage.messageID);
     }
   }
 };
