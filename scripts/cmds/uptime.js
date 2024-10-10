@@ -8,7 +8,7 @@ module.exports = {
   config: {
     name: "uptime",
     aliases: ["up", "upt", "stats", "info"],
-    author: "Priyanshi Kaur (modified)",
+    author: "Priyanshi Kaur(modified)",
     countDown: 0,
     role: 0,
     category: "system",
@@ -44,10 +44,13 @@ module.exports = {
       return { userCount: allUsers.length, threadCount: allThreads.length };
     };
 
-    const getPing = async () => {
-      const timeStart = Date.now();
-      await api.sendMessage({ body: "🐱 Meow~ Checking system info..." }, event.threadID);
-      return Date.now() - timeStart;
+    const sendCheckingMessage = async () => {
+      const checkingMessage = await api.sendMessage({ body: "🐱 Meow~ Checking system info..." }, event.threadID);
+      return checkingMessage.messageID;
+    };
+
+    const getPing = (startTime) => {
+      return Date.now() - startTime;
     };
 
     const getWeather = async (city) => {
@@ -62,9 +65,12 @@ module.exports = {
     };
 
     try {
+      const startTime = Date.now();
+      const checkingMessageID = await sendCheckingMessage();
+
       const { cpuUsage, totalMemoryGB, usedMemoryGB } = getSystemInfo();
       const { userCount, threadCount } = await getUsersThreadsInfo();
-      const ping = await getPing();
+      const ping = getPing(startTime);
       const uptimeFormatted = getUptime();
 
       const currentDate = new Date();
@@ -134,7 +140,8 @@ Paw-some day to you! ${randomPet}
         systemInfo = "Invalid option. Try 'full', 'cute', 'mini', or 'weather [city]'.";
       }
 
-      api.sendMessage({ body: systemInfo }, event.threadID);
+      // Edit the checking message with the uptime information
+      api.editMessage(systemInfo, checkingMessageID);
     } catch (error) {
       console.error("Error retrieving system information:", error);
       api.sendMessage("Oopsie! 🙀 I couldn't fetch the info. Please try again later!", event.threadID, event.messageID);
